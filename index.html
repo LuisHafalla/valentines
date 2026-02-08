@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Rhea💗</title>
+
+  <!-- Minimal cute font vibe -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #fbefdf;
+      --pink: #ff7f8a;
+      --pink2:#ff9aa3;
+      --ink: #5a4b4b;
+      --card:#fff7ee;
+      --line: rgba(255,127,138,.35);
+      --shadow: 0 18px 40px rgba(0,0,0,.08);
+      --radius: 18px;
+    }
+
+    *{ box-sizing: border-box; }
+    html, body{ height:100%; }
+
+    body{
+      margin:0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      overflow:hidden; /* keep body locked; screen will scroll if needed */
+    }
+
+    /* App + Screens */
+    .app{
+      height: 100dvh;   /* ✅ iPhone Safari toolbar-safe */
+      width: 100vw;
+      position: relative;
+      overflow:hidden;
+    }
+
+    .screen{
+      position:absolute;
+      inset:0;
+      display:none;
+      place-items:center;
+      padding: clamp(18px, 4vw, 44px) 16px;
+
+      height: 100dvh;      /* ✅ iPhone Safari fix */
+      max-height: 100svh;  /* fallback */
+    }
+
+    .screen.active{
+      display:grid;
+      animation: fadeUp .30s ease both;
+
+      /* ✅ allow scroll INSIDE the current page (fixes invitation cut-off on iPhone) */
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    @keyframes fadeUp{
+      from{ opacity:0; transform: translateY(12px); }
+      to  { opacity:1; transform: translateY(0); }
+    }
+
+    .stack{
+      width: min(980px, 92vw);
+      display:grid;
+      justify-items:center;
+      text-align:center;
+      gap: 14px;
+    }
+
+    /* Titles */
+    .title{
+      font-family: "DM Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-weight: 500;
+      letter-spacing: .08em;
+      color: var(--pink);
+      font-size: clamp(28px, 5vw, 54px);
+      margin: 0;
+    }
+    .subtitle{
+      font-family: "DM Mono", ui-monospace, monospace;
+      color: var(--pink2);
+      font-weight: 400;
+      font-size: clamp(14px, 2.6vw, 18px);
+      margin: 0;
+    }
+
+    /* Buttons */
+    .btnRow{
+      display:flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content:center;
+      margin-top: 10px;
+    }
+
+    .btn{
+      font-family: "DM Mono", ui-monospace, monospace;
+      font-weight: 500;
+      border-radius: 12px;
+      padding: 10px 18px;
+      border: 1px solid rgba(255,127,138,.45);
+      background: rgba(255,127,138,.12);
+      color: var(--pink);
+      cursor:pointer;
+      transition: transform .18s ease, background .18s ease, color .18s ease, box-shadow .18s ease, border-color .18s ease;
+      box-shadow: 0 6px 16px rgba(255,127,138,.10);
+      -webkit-tap-highlight-color: transparent;
+      user-select:none;
+    }
+
+    /* Hover effect to ALL buttons */
+    .btn:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(255,127,138,.16);
+      background: rgba(255,127,138,.88);
+      color: #fff;
+      border-color: rgba(255,127,138,.88);
+    }
+    .btn:active{ transform: translateY(1px) scale(.99); }
+
+    /* YES grows smoothly */
+    .yesGrow{
+      transform-origin: center;
+      will-change: transform;
+    }
+
+    /* Big center image + glow */
+    .hero{
+      width: min(380px, 70vw);
+      aspect-ratio: 1 / 1;
+      border-radius: 999px;
+      overflow:hidden;
+      background: rgba(255,127,138,.10);
+      border: 2px solid rgba(255,127,138,.25);
+
+      /* soft pink outline glow */
+      box-shadow:
+        0 0 0 6px rgba(255,127,138,.16),
+        0 16px 40px rgba(0,0,0,.10);
+
+      display:grid;
+      place-items:center;
+      margin-top: 10px;
+    }
+
+    /* breathing effect on photo */
+    .hero img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+      animation: breathe 3.4s ease-in-out infinite;
+      transform-origin: center;
+    }
+    @keyframes breathe{
+      0%,100% { transform: scale(1); filter: saturate(1); }
+      50%     { transform: scale(1.03); filter: saturate(1.03); }
+    }
+
+    .hero .placeholder{
+      font-family: "DM Mono", ui-monospace, monospace;
+      color: rgba(255,127,138,.85);
+      padding: 18px;
+      line-height: 1.4;
+    }
+
+    /* Audio */
+    .audioWrap{
+      width:min(520px, 92vw);
+      display:grid;
+      justify-items:center;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    audio{
+      width: min(520px, 92vw);
+      accent-color: var(--pink);
+    }
+
+    /* Page 3 date line */
+    .dateLine{
+      font-family: "DM Mono", ui-monospace, monospace;
+      color: var(--pink2);
+      font-size: clamp(16px, 2.9vw, 20px);
+      margin-top: -2px;
+    }
+
+    /* Invitation letter card (Page 4) */
+    .letterWrap{
+      width:min(900px, 94vw);
+      display:grid;
+      gap: 14px;
+      justify-items:center;
+      text-align:center;
+      align-content:start; /* ✅ helps on iPhone */
+      padding-top: 10px;
+    }
+
+    .letterCard{
+      width:100%;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow:hidden;
+      text-align:left;
+
+      /* glow */
+      box-shadow:
+        0 0 0 6px rgba(255,127,138,.10),
+        0 18px 40px rgba(0,0,0,.08);
+
+      transition: box-shadow .2s ease, transform .2s ease, border-color .2s ease;
+    }
+    .letterCard:hover{
+      border-color: rgba(255,127,138,.75);
+      box-shadow:
+        0 0 0 7px rgba(255,127,138,.16),
+        0 22px 55px rgba(0,0,0,.10);
+      transform: translateY(-1px);
+    }
+
+    .letterTop{
+      padding: 18px 18px 0 18px;
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px 16px;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+    .badge{
+      font-family:"DM Mono", ui-monospace, monospace;
+      color: var(--pink);
+      border: 1px solid rgba(255,127,138,.35);
+      background: rgba(255,127,138,.10);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 500;
+      font-size: 13px;
+    }
+    .letterTitle{
+      margin:0;
+      padding: 0 18px;
+      font-family:"DM Mono", ui-monospace, monospace;
+      color: var(--pink);
+      letter-spacing:.06em;
+      font-size: clamp(20px, 3.2vw, 26px);
+    }
+    .rule{
+      height:1px;
+      background: linear-gradient(90deg, transparent, rgba(255,127,138,.55), transparent);
+      margin: 12px 18px;
+    }
+
+    .letterBody{
+      padding: 0 18px 18px 18px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: rgba(90,75,75,.95);
+    }
+    .letterBody p{ margin: 10px 0; }
+
+    .kv{
+      margin-top: 12px;
+      display:grid;
+      gap: 8px;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px dashed rgba(255,127,138,.55);
+      background:
+        radial-gradient(260px 120px at 15% 20%, rgba(255,127,138,.10), transparent 60%),
+        rgba(255,127,138,.06);
+      font-family: "DM Mono", ui-monospace, monospace;
+      color: rgba(90,75,75,.95);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      box-shadow: 0 0 0 0 rgba(255,127,138,0);
+    }
+    .kv:hover{
+      transform: translateY(-1px);
+      border-color: rgba(255,127,138,.85);
+      box-shadow:
+        0 0 0 6px rgba(255,127,138,.16),
+        0 14px 30px rgba(255,127,138,.18);
+    }
+    .kv b{ color: var(--pink); font-weight: 500; }
+
+    .placeImg{
+      width:100%;
+      height: clamp(180px, 32vw, 280px);
+      object-fit: cover;
+      display:block;
+      border-top: 1px solid rgba(255,127,138,.20);
+      border-bottom: 1px solid rgba(255,127,138,.20);
+    }
+
+    .linksRow{
+      padding: 14px 18px 18px 18px;
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+      justify-content:flex-start;
+    }
+
+    /* Page 5 */
+    .flowerStage{
+      width: min(520px, 92vw);
+      height: min(520px, 62vh);
+      display:grid;
+      place-items:center;
+    }
+    .vaseSVG{
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .petal{
+      transform-box: fill-box;
+      transform-origin: center;
+      opacity: 1;
+    }
+    .petal.fall{
+      animation: petalFall 2.6s ease-in forwards;
+    }
+    @keyframes petalFall{
+      0%   { transform: translate(0,0) rotate(0deg); opacity:1; }
+      55%  { opacity: .95; }
+      100% { transform: translate(var(--dx, 30px), var(--dy, 260px)) rotate(var(--dr, 240deg)); opacity:0; }
+    }
+
+    .stemBounce{
+      transform-origin: bottom center;
+      animation: stemWiggle 2.6s ease-in-out forwards;
+    }
+    @keyframes stemWiggle{
+      0%,100%{ transform: rotate(0deg); }
+      20%{ transform: rotate(-1.5deg); }
+      45%{ transform: rotate(1.2deg); }
+      70%{ transform: rotate(-0.8deg); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- PAGE 1 -->
+    <section class="screen active" id="p1" aria-label="Page 1">
+      <div class="stack">
+        <h1 class="title">Can you be my valentine<br/>for the rest of your life?</h1>
+
+        <div class="btnRow" aria-label="Buttons">
+          <button class="btn yesGrow" id="yesBtn">Yes</button>
+          <button class="btn" id="noBtn">No</button>
+        </div>
+
+        <div class="hero" aria-label="Your photo">
+          <img id="face1" alt="Your photo" style="display:none;" />
+          <div class="placeholder" id="face1ph">
+            Put your photo in:<br/>
+            <b>assets/luis.jpg</b>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 2 -->
+    <section class="screen" id="p2" aria-label="Page 2">
+      <div class="stack">
+        <h1 class="title">Thank you</h1>
+
+        <div class="hero" aria-label="Your photo again">
+          <img id="face2" alt="Your photo" style="display:none;" />
+          <div class="placeholder" id="face2ph">
+            Same photo is used here.<br/>
+            <b>assets/luis.jpg</b>
+          </div>
+        </div>
+
+        <div class="audioWrap" aria-label="Audio">
+          <audio id="voice" controls playsinline>
+            <source id="voiceSrc" src="" type="audio/mpeg" />
+            Your browser does not support audio.
+          </audio>
+          <p class="subtitle">Don’t go yet!</p>
+        </div>
+
+        <button class="btn" id="toP3Btn">Click me</button>
+      </div>
+    </section>
+
+    <!-- PAGE 3 -->
+    <section class="screen" id="p3" aria-label="Page 3">
+      <div class="stack">
+        <h1 class="title">Are you free on</h1>
+        <div class="dateLine">February 14, 2026 (Saturday)</div>
+
+        <div class="btnRow" style="margin-top:14px;">
+          <button class="btn" id="confirmBtn">Confirm</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 4 -->
+    <section class="screen" id="p4" aria-label="Invitation letter">
+      <div class="letterWrap">
+        <h1 class="title" style="font-size:clamp(26px,4.4vw,44px);">Invitation</h1>
+
+        <article class="letterCard" role="article" aria-label="Formal invitation letter">
+          <div class="letterTop">
+            <span class="badge">💌 Date Invitation</span>
+            <span class="badge">Feb 14, 2026 • 5:00 PM – 8:00 PM</span>
+          </div>
+
+          <h2 class="letterTitle">To: Baby Rhea Loraine</h2>
+          <div class="rule"></div>
+
+          <div class="letterBody">
+            <p>Dear Baby,</p>
+
+            <p>
+              I would like to formally invite you to a Valentine’s date with me.
+              Please join me for a special evening of good food, good conversation, and a night I hope you’ll remember.
+            </p>
+
+            <div class="kv" aria-label="Event details">
+              <div><b>Date:</b> February 14, 2026 (Saturday)</div>
+              <div><b>Time:</b> 5:00 PM – 8:00 PM</div>
+              <div><b>Venue:</b> Penthouse Makati</div>
+              <div><b>Food:</b> <span id="foodName">PASTE_FOOD_NAME_HERE</span></div>
+            </div>
+
+            <p style="margin-top:12px;">
+              Respectfully,<br/>
+              <span style="font-family:'DM Mono', monospace; color: var(--pink);">— Luis Hafalla Pogi</span>
+            </p>
+          </div>
+
+          <img class="placeImg" id="placeImg" alt="Place photo" />
+
+          <div class="linksRow" aria-label="Links">
+            <a class="btn" id="menuLink" href="#" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">View Menu ↗</a>
+            <a class="btn" id="mapsLink" href="#" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">Open Location ↗</a>
+          </div>
+        </article>
+
+        <div class="btnRow">
+          <button class="btn" id="toP5Btn">Next 💗</button>
+          <button class="btn" id="restartBtn">Restart</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 5 -->
+    <section class="screen" id="p5" aria-label="Final page">
+      <div class="stack">
+        <h1 class="title">Thank you for being my girlfriend</h1>
+
+        <div class="flowerStage" aria-label="Flowers with falling petals">
+          <svg class="vaseSVG" viewBox="0 0 600 600" role="img" aria-label="Flower vase illustration">
+            <rect x="0" y="0" width="600" height="600" fill="transparent"/>
+
+            <g class="stemBounce" id="stems">
+              <path d="M290 520 C270 430, 250 360, 230 300" stroke="#1f6b6b" stroke-width="18" stroke-linecap="round" fill="none"/>
+              <path d="M310 520 C330 430, 355 350, 380 290" stroke="#1f6b6b" stroke-width="18" stroke-linecap="round" fill="none"/>
+              <path d="M300 520 C300 420, 305 340, 305 250" stroke="#1f6b6b" stroke-width="18" stroke-linecap="round" fill="none"/>
+            </g>
+
+            <g>
+              <path d="M235 520 L365 520 L350 575 Q300 595 250 575 Z" fill="#2c6f7a" opacity=".85"/>
+              <path d="M245 520 L355 520 L342 570 Q300 588 258 570 Z" fill="#2c6f7a" opacity=".55"/>
+              <rect x="240" y="508" width="120" height="18" rx="6" fill="#2c6f7a" opacity=".95"/>
+            </g>
+
+            <circle cx="230" cy="290" r="20" fill="#ff5aa2"/>
+            <circle cx="380" cy="280" r="20" fill="#ff5aa2"/>
+            <circle cx="305" cy="240" r="20" fill="#ff5aa2"/>
+
+            <g id="petalsLeft">
+              <ellipse class="petal" data-fall="1" cx="200" cy="285" rx="36" ry="18" fill="#9a3cff"/>
+              <ellipse class="petal" data-fall="1" cx="215" cy="255" rx="36" ry="18" fill="#9a3cff"/>
+              <ellipse class="petal" data-fall="1" cx="245" cy="255" rx="36" ry="18" fill="#9a3cff"/>
+              <ellipse class="petal" data-fall="1" cx="260" cy="285" rx="36" ry="18" fill="#9a3cff"/>
+              <ellipse class="petal" data-fall="1" cx="230" cy="305" rx="36" ry="18" fill="#9a3cff"/>
+            </g>
+
+            <g id="petalsRight">
+              <ellipse class="petal" data-fall="1" cx="350" cy="275" rx="36" ry="18" fill="#ff3aa8"/>
+              <ellipse class="petal" data-fall="1" cx="365" cy="245" rx="36" ry="18" fill="#ff3aa8"/>
+              <ellipse class="petal" data-fall="1" cx="395" cy="245" rx="36" ry="18" fill="#ff3aa8"/>
+              <ellipse class="petal" data-fall="1" cx="410" cy="275" rx="36" ry="18" fill="#ff3aa8"/>
+              <ellipse class="petal" data-fall="1" cx="380" cy="295" rx="36" ry="18" fill="#ff3aa8"/>
+            </g>
+
+            <g id="petalsTop">
+              <ellipse class="petal" data-fall="1" cx="270" cy="235" rx="44" ry="20" fill="#ff7f8a"/>
+              <ellipse class="petal" data-fall="1" cx="290" cy="205" rx="44" ry="20" fill="#ff7f8a"/>
+              <ellipse class="petal" data-fall="1" cx="320" cy="205" rx="44" ry="20" fill="#ff7f8a"/>
+              <ellipse class="petal" data-fall="1" cx="340" cy="235" rx="44" ry="20" fill="#ff7f8a"/>
+              <ellipse class="petal" data-fall="1" cx="305" cy="255" rx="44" ry="20" fill="#ff7f8a"/>
+            </g>
+          </svg>
+        </div>
+
+        <div class="btnRow">
+          <button class="btn" id="restartBtn2">Restart</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    // IMPORTANT: make sure your repo has:
+    // assets/luis.jpg
+    // assets/penthouse.jpg
+    // assets/voice.mp3
+    const PHOTO_URL = "assets/luis.jpg";
+    const AUDIO_URL = "assets/voice.mp3";
+    const FOOD_NAME = "AKO SANA PARA MAS MASARAP PA SA STEAK";
+    const MENU_URL  = "https://www.thepenthouse.com.ph/menu";
+    const MAPS_URL  = "https://www.google.com/maps/dir/14.5884468,121.0456822/The+Penthouse+8747,+8747+Paseo+de+Roxas,+Makati+City,+1227+Metro+Manila/@14.5696939,121.0182452,14z/data=!3m1!4b1!4m9!4m8!1m1!4e1!1m5!1m1!1s0x3397c9067937035b:0x7d2492f503477437!2m2!1d121.024242!2d14.558085?entry=ttu&g_ep=EgoyMDI2MDIwNC4wIKXMDSoKLDEwMDc5MjA2N0gBUAM%3D";
+    const PLACE_IMAGE_URL = "assets/penthouse.jpg";
+
+    const screens = ["p1","p2","p3","p4","p5"].map(id => document.getElementById(id));
+
+    function show(id){
+      screens.forEach(s => s.classList.toggle("active", s.id === id));
+      // keeps top in most browsers; scroll is inside active screen
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+
+      if (id === "p5") startPetalFall();
+    }
+
+    function applyMedia(){
+      const face1 = document.getElementById("face1");
+      const face2 = document.getElementById("face2");
+      const face1ph = document.getElementById("face1ph");
+      const face2ph = document.getElementById("face2ph");
+
+      face1.src = PHOTO_URL;
+      face2.src = PHOTO_URL;
+      face1.style.display = "block";
+      face2.style.display = "block";
+      face1ph.style.display = "none";
+      face2ph.style.display = "none";
+
+      const voice = document.getElementById("voice");
+      const voiceSrc = document.getElementById("voiceSrc");
+      voiceSrc.src = AUDIO_URL;
+      voice.load();
+
+      document.getElementById("foodName").textContent = FOOD_NAME;
+      document.getElementById("menuLink").href = MENU_URL;
+      document.getElementById("mapsLink").href = MAPS_URL;
+      document.getElementById("placeImg").src = PLACE_IMAGE_URL;
+    }
+    applyMedia();
+
+    // Page 1: NO makes YES grow
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn  = document.getElementById("noBtn");
+
+    let yesScale = 1;
+    const maxScale = 3.2;
+
+    function setYesScale(scale){
+      yesBtn.style.transform = `scale(${scale})`;
+    }
+
+    noBtn.addEventListener("click", () => {
+      yesScale = Math.min(maxScale, yesScale + 0.18);
+      setYesScale(yesScale);
+
+      const noScale = Math.max(0.78, 1.08 - (yesScale - 1) * 0.12);
+      noBtn.style.transform = `scale(${noScale})`;
+    });
+
+    yesBtn.addEventListener("click", () => show("p2"));
+
+    // Page 2 -> Page 3: tap triggers audio (allowed on iPhone because it's user action)
+    document.getElementById("toP3Btn").addEventListener("click", () => {
+      const audio = document.getElementById("voice");
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+      }
+      show("p3");
+    });
+
+    document.getElementById("confirmBtn").addEventListener("click", () => show("p4"));
+    document.getElementById("toP5Btn").addEventListener("click", () => show("p5"));
+
+    function restart(){
+      yesScale = 1;
+      setYesScale(yesScale);
+      noBtn.style.transform = "scale(1)";
+      resetPetals();
+      show("p1");
+    }
+    document.getElementById("restartBtn").addEventListener("click", restart);
+    document.getElementById("restartBtn2").addEventListener("click", restart);
+
+    // -------- Page 5 petals fall + disappear reliably --------
+    let petalsStarted = false;
+    let originalSvgHTML = null;
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const svg = document.querySelector(".vaseSVG");
+      if (svg) originalSvgHTML = svg.innerHTML;
+    });
+
+    function resetPetals(){
+      petalsStarted = false;
+      const svg = document.querySelector(".vaseSVG");
+      if (svg && originalSvgHTML) svg.innerHTML = originalSvgHTML;
+    }
+
+    function startPetalFall(){
+      if (petalsStarted) return;
+      petalsStarted = true;
+
+      const petals = Array.from(document.querySelectorAll(".petal[data-fall='1']"));
+      petals.forEach((p, i) => {
+        const dx = (Math.random() * 160 - 80).toFixed(0) + "px";
+        const dy = (220 + Math.random() * 140).toFixed(0) + "px";
+        const dr = (180 + Math.random() * 260).toFixed(0) + "deg";
+
+        p.style.setProperty("--dx", dx);
+        p.style.setProperty("--dy", dy);
+        p.style.setProperty("--dr", dr);
+
+        p.style.animationDelay = (0.25 + i * 0.10).toFixed(2) + "s";
+        p.classList.add("fall");
+
+        // after animation, remove from SVG (most reliable across iPhone Safari)
+        p.addEventListener("animationend", () => {
+          p.style.opacity = "0";
+          p.style.pointerEvents = "none";
+          if (p.parentNode) p.parentNode.removeChild(p);
+        }, { once: true });
+      });
+    }
+  </script>
+</body>
+</html>
