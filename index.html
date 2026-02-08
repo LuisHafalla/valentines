@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>Rhea💗</title>
 
-  <!-- Minimal cute font vibe -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -30,12 +30,12 @@
       background: var(--bg);
       color: var(--ink);
       font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      overflow:hidden; /* keep body locked; screen will scroll if needed */
+      overflow:hidden; 
     }
 
-    /* App + Screens */
+
     .app{
-      height: 100dvh;   /* ✅ iPhone Safari toolbar-safe */
+      height: 100dvh;   
       width: 100vw;
       position: relative;
       overflow:hidden;
@@ -48,15 +48,15 @@
       place-items:center;
       padding: clamp(18px, 4vw, 44px) 16px;
 
-      height: 100dvh;      /* ✅ iPhone Safari fix */
-      max-height: 100svh;  /* fallback */
+      height: 100dvh;      
+      max-height: 100svh;  
     }
 
     .screen.active{
       display:grid;
       animation: fadeUp .30s ease both;
 
-      /* ✅ allow scroll INSIDE the current page (fixes invitation cut-off on iPhone) */
+
       overflow:auto;
       -webkit-overflow-scrolling: touch;
     }
@@ -74,7 +74,7 @@
       gap: 14px;
     }
 
-    /* Titles */
+
     .title{
       font-family: "DM Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
       font-weight: 500;
@@ -91,7 +91,7 @@
       margin: 0;
     }
 
-    /* Buttons */
+
     .btnRow{
       display:flex;
       gap: 14px;
@@ -115,7 +115,7 @@
       user-select:none;
     }
 
-    /* Hover effect to ALL buttons */
+
     .btn:hover{
       transform: translateY(-1px);
       box-shadow: 0 10px 22px rgba(255,127,138,.16);
@@ -125,13 +125,13 @@
     }
     .btn:active{ transform: translateY(1px) scale(.99); }
 
-    /* YES grows smoothly */
+
     .yesGrow{
       transform-origin: center;
       will-change: transform;
     }
 
-    /* Big center image + glow */
+
     .hero{
       width: min(380px, 70vw);
       aspect-ratio: 1 / 1;
@@ -140,7 +140,7 @@
       background: rgba(255,127,138,.10);
       border: 2px solid rgba(255,127,138,.25);
 
-      /* soft pink outline glow */
+
       box-shadow:
         0 0 0 6px rgba(255,127,138,.16),
         0 16px 40px rgba(0,0,0,.10);
@@ -150,7 +150,7 @@
       margin-top: 10px;
     }
 
-    /* breathing effect on photo */
+
     .hero img{
       width:100%;
       height:100%;
@@ -199,7 +199,7 @@
       gap: 14px;
       justify-items:center;
       text-align:center;
-      align-content:start; /* ✅ helps on iPhone */
+      align-content:start;
       padding-top: 10px;
     }
 
@@ -517,10 +517,6 @@
   </div>
 
   <script>
-    // IMPORTANT: make sure your repo has:
-    // assets/luis.jpg
-    // assets/penthouse.jpg
-    // assets/voice.mp3
     const PHOTO_URL = "assets/luis.jpg";
     const AUDIO_URL = "assets/voice.mp3";
     const FOOD_NAME = "AKO SANA PARA MAS MASARAP PA SA STEAK";
@@ -532,7 +528,6 @@
 
     function show(id){
       screens.forEach(s => s.classList.toggle("active", s.id === id));
-      // keeps top in most browsers; scroll is inside active screen
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
 
@@ -564,7 +559,7 @@
     }
     applyMedia();
 
-    // Page 1: NO makes YES grow
+
     const yesBtn = document.getElementById("yesBtn");
     const noBtn  = document.getElementById("noBtn");
 
@@ -585,7 +580,7 @@
 
     yesBtn.addEventListener("click", () => show("p2"));
 
-    // Page 2 -> Page 3: tap triggers audio (allowed on iPhone because it's user action)
+
     document.getElementById("toP3Btn").addEventListener("click", () => {
       const audio = document.getElementById("voice");
       if (audio) {
@@ -608,7 +603,7 @@
     document.getElementById("restartBtn").addEventListener("click", restart);
     document.getElementById("restartBtn2").addEventListener("click", restart);
 
-    // -------- Page 5 petals fall + disappear reliably --------
+
     let petalsStarted = false;
     let originalSvgHTML = null;
 
@@ -640,7 +635,7 @@
         p.style.animationDelay = (0.25 + i * 0.10).toFixed(2) + "s";
         p.classList.add("fall");
 
-        // after animation, remove from SVG (most reliable across iPhone Safari)
+
         p.addEventListener("animationend", () => {
           p.style.opacity = "0";
           p.style.pointerEvents = "none";
