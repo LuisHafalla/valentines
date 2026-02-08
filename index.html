@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>Rhea💗</title>
 
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -30,12 +29,11 @@
       background: var(--bg);
       color: var(--ink);
       font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      overflow:hidden; 
+      overflow:hidden;
     }
 
-
     .app{
-      height: 100dvh;   
+      height: 100dvh;
       width: 100vw;
       position: relative;
       overflow:hidden;
@@ -48,15 +46,13 @@
       place-items:center;
       padding: clamp(18px, 4vw, 44px) 16px;
 
-      height: 100dvh;      
-      max-height: 100svh;  
+      height: 100dvh;
+      max-height: 100svh;
     }
 
     .screen.active{
       display:grid;
       animation: fadeUp .30s ease both;
-
-
       overflow:auto;
       -webkit-overflow-scrolling: touch;
     }
@@ -74,7 +70,6 @@
       gap: 14px;
     }
 
-
     .title{
       font-family: "DM Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
       font-weight: 500;
@@ -90,7 +85,6 @@
       font-size: clamp(14px, 2.6vw, 18px);
       margin: 0;
     }
-
 
     .btnRow{
       display:flex;
@@ -115,7 +109,6 @@
       user-select:none;
     }
 
-
     .btn:hover{
       transform: translateY(-1px);
       box-shadow: 0 10px 22px rgba(255,127,138,.16);
@@ -125,12 +118,10 @@
     }
     .btn:active{ transform: translateY(1px) scale(.99); }
 
-
     .yesGrow{
       transform-origin: center;
       will-change: transform;
     }
-
 
     .hero{
       width: min(380px, 70vw);
@@ -139,17 +130,13 @@
       overflow:hidden;
       background: rgba(255,127,138,.10);
       border: 2px solid rgba(255,127,138,.25);
-
-
       box-shadow:
         0 0 0 6px rgba(255,127,138,.16),
         0 16px 40px rgba(0,0,0,.10);
-
       display:grid;
       place-items:center;
       margin-top: 10px;
     }
-
 
     .hero img{
       width:100%;
@@ -171,7 +158,6 @@
       line-height: 1.4;
     }
 
-    /* Audio */
     .audioWrap{
       width:min(520px, 92vw);
       display:grid;
@@ -184,7 +170,6 @@
       accent-color: var(--pink);
     }
 
-    /* Page 3 date line */
     .dateLine{
       font-family: "DM Mono", ui-monospace, monospace;
       color: var(--pink2);
@@ -192,7 +177,6 @@
       margin-top: -2px;
     }
 
-    /* Invitation letter card (Page 4) */
     .letterWrap{
       width:min(900px, 94vw);
       display:grid;
@@ -210,12 +194,9 @@
       border-radius: var(--radius);
       overflow:hidden;
       text-align:left;
-
-      /* glow */
       box-shadow:
         0 0 0 6px rgba(255,127,138,.10),
         0 18px 40px rgba(0,0,0,.08);
-
       transition: box-shadow .2s ease, transform .2s ease, border-color .2s ease;
     }
     .letterCard:hover{
@@ -307,7 +288,6 @@
       justify-content:flex-start;
     }
 
-    /* Page 5 */
     .flowerStage{
       width: min(520px, 92vw);
       height: min(520px, 62vh);
@@ -384,7 +364,7 @@
         </div>
 
         <div class="audioWrap" aria-label="Audio">
-          <audio id="voice" controls playsinline>
+          <audio id="voice" controls playsinline preload="metadata">
             <source id="voiceSrc" src="" type="audio/mpeg" />
             Your browser does not support audio.
           </audio>
@@ -525,14 +505,48 @@
     const PLACE_IMAGE_URL = "assets/penthouse.jpg";
 
     const screens = ["p1","p2","p3","p4","p5"].map(id => document.getElementById(id));
+    const order = ["p1","p2","p3","p4","p5"];
 
-    function show(id){
+    // ✅ Stop audio (prevents auto-play when going back / switching apps)
+    function stopAudio(){
+      const a = document.getElementById("voice");
+      if (!a) return;
+      a.pause();
+      a.currentTime = 0;
+    }
+
+    // ✅ History helpers (so iPhone back button works like real pages)
+    function push(id){
+      history.pushState({ page: id }, "", `#${id}`);
+    }
+
+    function show(id, opts = {}){
       screens.forEach(s => s.classList.toggle("active", s.id === id));
+
+      // reset scroll inside the screen
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
 
+      // stop audio on every navigation
+      stopAudio();
+
+      // push history only for forward navigation (not when user taps back)
+      if (!opts.fromHistory) push(id);
+
       if (id === "p5") startPetalFall();
     }
+
+    // Handle browser back/forward
+    window.addEventListener("popstate", (e) => {
+      const id = (e.state && e.state.page) || (location.hash ? location.hash.replace("#","") : "p1");
+      const safeId = order.includes(id) ? id : "p1";
+      show(safeId, { fromHistory: true });
+    });
+
+    // iPhone Safari sometimes resumes media when returning to tab
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stopAudio();
+    });
 
     function applyMedia(){
       const face1 = document.getElementById("face1");
@@ -559,7 +573,15 @@
     }
     applyMedia();
 
+    // ✅ Initialize history state on first load + deep-link support (#p3 etc.)
+    window.addEventListener("DOMContentLoaded", () => {
+      const start = (location.hash ? location.hash.replace("#","") : "p1");
+      const safeStart = order.includes(start) ? start : "p1";
+      history.replaceState({ page: safeStart }, "", `#${safeStart}`);
+      show(safeStart, { fromHistory: true });
+    });
 
+    // Page 1: NO makes YES grow
     const yesBtn = document.getElementById("yesBtn");
     const noBtn  = document.getElementById("noBtn");
 
@@ -580,13 +602,9 @@
 
     yesBtn.addEventListener("click", () => show("p2"));
 
-
+    // ✅ FIX: Do NOT auto-play audio when moving to Page 3
     document.getElementById("toP3Btn").addEventListener("click", () => {
-      const audio = document.getElementById("voice");
-      if (audio) {
-        audio.currentTime = 0;
-        audio.play().catch(() => {});
-      }
+      stopAudio();
       show("p3");
     });
 
@@ -603,7 +621,7 @@
     document.getElementById("restartBtn").addEventListener("click", restart);
     document.getElementById("restartBtn2").addEventListener("click", restart);
 
-
+    // Petals
     let petalsStarted = false;
     let originalSvgHTML = null;
 
@@ -634,7 +652,6 @@
 
         p.style.animationDelay = (0.25 + i * 0.10).toFixed(2) + "s";
         p.classList.add("fall");
-
 
         p.addEventListener("animationend", () => {
           p.style.opacity = "0";
