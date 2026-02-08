@@ -45,7 +45,6 @@
       display:none;
       place-items:center;
       padding: clamp(18px, 4vw, 44px) 16px;
-
       height: 100dvh;
       max-height: 100svh;
     }
@@ -432,7 +431,6 @@
 
         <div class="btnRow">
           <button class="btn" id="toP5Btn">Next 💗</button>
-          <button class="btn" id="restartBtn">Restart</button>
         </div>
       </div>
     </section>
@@ -507,7 +505,6 @@
     const screens = ["p1","p2","p3","p4","p5"].map(id => document.getElementById(id));
     const order = ["p1","p2","p3","p4","p5"];
 
-    // ✅ Stop audio (prevents auto-play when going back / switching apps)
     function stopAudio(){
       const a = document.getElementById("voice");
       if (!a) return;
@@ -515,35 +512,25 @@
       a.currentTime = 0;
     }
 
-    // ✅ History helpers (so iPhone back button works like real pages)
     function push(id){
       history.pushState({ page: id }, "", `#${id}`);
     }
 
     function show(id, opts = {}){
       screens.forEach(s => s.classList.toggle("active", s.id === id));
-
-      // reset scroll inside the screen
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
-
-      // stop audio on every navigation
       stopAudio();
-
-      // push history only for forward navigation (not when user taps back)
       if (!opts.fromHistory) push(id);
-
       if (id === "p5") startPetalFall();
     }
 
-    // Handle browser back/forward
     window.addEventListener("popstate", (e) => {
       const id = (e.state && e.state.page) || (location.hash ? location.hash.replace("#","") : "p1");
       const safeId = order.includes(id) ? id : "p1";
       show(safeId, { fromHistory: true });
     });
 
-    // iPhone Safari sometimes resumes media when returning to tab
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) stopAudio();
     });
@@ -573,7 +560,6 @@
     }
     applyMedia();
 
-    // ✅ Initialize history state on first load + deep-link support (#p3 etc.)
     window.addEventListener("DOMContentLoaded", () => {
       const start = (location.hash ? location.hash.replace("#","") : "p1");
       const safeStart = order.includes(start) ? start : "p1";
@@ -581,7 +567,6 @@
       show(safeStart, { fromHistory: true });
     });
 
-    // Page 1: NO makes YES grow
     const yesBtn = document.getElementById("yesBtn");
     const noBtn  = document.getElementById("noBtn");
 
@@ -602,7 +587,6 @@
 
     yesBtn.addEventListener("click", () => show("p2"));
 
-    // ✅ FIX: Do NOT auto-play audio when moving to Page 3
     document.getElementById("toP3Btn").addEventListener("click", () => {
       stopAudio();
       show("p3");
@@ -618,10 +602,8 @@
       resetPetals();
       show("p1");
     }
-    document.getElementById("restartBtn").addEventListener("click", restart);
     document.getElementById("restartBtn2").addEventListener("click", restart);
 
-    // Petals
     let petalsStarted = false;
     let originalSvgHTML = null;
 
